@@ -71,10 +71,11 @@ int my_printf(char * restrict format, ...) {
         return -1;
     }
 
-    int format_len = 0;
+    int format_len = 0, buffer_len = 0;
     int index = 0;
-    int buffer_len = 0;
     char *buffer;
+    va_list specifiers;
+
     char* (*printFunction)(va_list);
 
 	buffer = malloc(sizeof(char) * BUFSIZE);
@@ -82,12 +83,12 @@ int my_printf(char * restrict format, ...) {
         return -1;
     }
 
-    va_list specifiers;
+    
     // char* current;
     va_start(specifiers, format);
     while(format[index] != '\0') {
         if(format[index] != '%') {
-            buffer[buffer_len++] = format[index];
+            buffer[buffer_len++] = format[index++];
             format_len++;
         } else {
             index++;
@@ -105,5 +106,5 @@ int my_printf(char * restrict format, ...) {
 }
 
 int main() {
-    my_printf("%s\n", "15");
+    my_printf("hello\n");
 }

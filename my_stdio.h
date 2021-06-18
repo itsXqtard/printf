@@ -4,6 +4,7 @@
 #include <stdarg.h>
 
 #define NULL (void *)0
+#define BUFSIZE 256
 
 typedef struct print_specifier
 {
@@ -14,3 +15,5 @@ typedef struct print_specifier
 
 
 int my_printf(char * restrict format, ...);
+
+#endif

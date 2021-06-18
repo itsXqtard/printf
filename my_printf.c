@@ -1,13 +1,6 @@
 #include "my_stdio.h"
 #include <stdio.h>
 
-int checkBufferOverflow(char* buffer, buffer_len) {
-    if(len > BUFSIZE) {
-        write(1, buffer, len);
-        buffer_len = 0; 
-    }
-    return buffer_len;
-}
 
 int my_strlen(char* str) {
     int index = 0;
@@ -18,65 +11,99 @@ int my_strlen(char* str) {
 }
 
 char* print_d() {
-    return "";
+    char* c = "";
+    return c;
 }
 
 char* print_o(){
-    return "";
+    char* c = "";
+    return c;
 }
 
 char* print_u() {
-    return "";
+    char* c = "";
+    return c;
 }
 
 char* print_x() {
-    return "";
+    char* c = "";
+    return c;
 }
 
 char* print_c() {
-    return "";
+    char* c = "";
+    return c;
 }
 
 char* print_s() {
-    return "";
+    char* c = "";
+    return c;
 }
 
-char print_p() {
-    return "";
+char* print_p() {
+    char* c = "";
+    return c;
 }
 
-char* (*getPrintFunction(char i))(va_list) {
-    
+char* (*getPrintFunction(char i, int size))(va_list) {
+
+    print_type function_list[] = {
+        {'d', print_d},
+        {'o', print_o},
+        {'u', print_u},
+        {'x', print_x},
+        {'c', print_c},
+        {'s', print_s},
+        {'p', print_p}
+    };
+
+    for(int x = 0; x < size; x++) {
+        if(function_list[x].specifier == i) {
+            return function_list[x].func;
+        }
+    }
+    return NULLPTR;
 }
 
 int my_printf(char * restrict format, ...) {
     
-    if(format == (char*)NULL) {
+    if(format == (char*)NULLPTR) {
         return -1;
     }
 
     int format_len = 0;
     int index = 0;
     int buffer_len = 0;
+    char *buffer;
+    char* (*printFunction)(va_list);
+
+	buffer = malloc(sizeof(char) * BUFSIZE);
+	if (buffer == NULLPTR) {
+        return -1;
+    }
 
     va_list specifiers;
-    char* current;
+    // char* current;
     va_start(specifiers, format);
     while(format[index] != '\0') {
         if(format[index] != '%') {
-            buffer_len = checkBufferOverflow(buffer, buffer_len);
             buffer[buffer_len++] = format[index];
             format_len++;
         } else {
-            index++
-
+            index++;
+            printFunction = getPrintFunction(format[index], SPECIFIER_SIZE);
+            char* s = printFunction(specifiers);
+            buffer[buffer_len++] = s[0];
+            format_len++;
         }
     }
+    write(1, buffer, buffer_len);
+    va_end(specifiers);
     return 0;
     
 
 }
 
 int main() {
-    printf("%g\n",5);
+    my_printf("%s\n", "15");
 }

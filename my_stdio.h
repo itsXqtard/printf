@@ -4,11 +4,15 @@
 #include <stdarg.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <limits.h>
+#include <stdbool.h>
 #include "my_string.h"
 
 #define NULLPTR (void *)0
 #define BUFSIZE 256
 #define SPECIFIER_SIZE 7
+#define UNSIGNED false
+#define SIGNED true
 
 typedef struct print_specifier
 {

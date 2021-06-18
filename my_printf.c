@@ -6,17 +6,20 @@
 char* print_d(va_list specifiers) {
     char* c = malloc(sizeof(char) * BUFSIZE);
     int num = va_arg(specifiers, int);
-    return my_itoa(num, c, 10);
+    return my_itoa(num, c, 10, SIGNED);
 }
 
-char* print_o(){
-    char* c = "";
-    return c;
+char* print_o(va_list specifiers){
+    char* c = malloc(sizeof(char) * BUFSIZE);
+    int num = va_arg(specifiers, int);
+    return my_itoa(num, c, 8, UNSIGNED);
 }
 
-char* print_u() {
-    char* c = "";
-    return c;
+
+char* print_u(va_list specifiers) {
+    char* c = malloc(sizeof(char) * BUFSIZE);
+    int signedInt = va_arg(specifiers, int);
+    return my_itoa(signedInt, c, 10, UNSIGNED);
 }
 
 char* print_x() {
@@ -88,8 +91,14 @@ int my_printf(char * restrict format, ...) {
             index++;
             printFunction = getPrintFunction(format[index], SPECIFIER_SIZE);
             char* s = printFunction(specifiers);
-            buffer[buffer_len++] = s[0];
-            format_len++;
+            int i = 0;
+            while(s[i] != '\0') {
+                buffer[buffer_len++] = s[i];
+                format_len++;
+                i++;
+            }
+            free(s);
+            index++;
         }
     }
     write(1, buffer, buffer_len);
@@ -100,5 +109,6 @@ int my_printf(char * restrict format, ...) {
 }
 
 int main() {
-    my_printf("hello %d\n", 5);
+    my_printf("hello %u %o %d %o %d\n", -8, 8, 8, -8, -8);
+    printf("hello %u %o %d %o %d", -8, 8, 8, -8, -8);
 }

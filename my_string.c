@@ -34,7 +34,7 @@ int my_strlen(char* str) {
     return index;
 }
 
-char* my_itoa(int num, char* str, int base)
+char* my_itoa(long num, char* str, int base, bool isSigned)
 {
     int i = 0;
     int isNegative = 0;
@@ -49,10 +49,14 @@ char* my_itoa(int num, char* str, int base)
   
     // In standard itoa(), negative numbers are handled only with 
     // base 10. Otherwise numbers are considered unsigned.
-    if (num < 0 && base == 10)
+    if (num < 0 && base == 10 && isSigned)
     {
         isNegative = 1;
         num = -num;
+    }
+
+    if(num < 0 && !isSigned) {
+        num = (UINT_MAX + num) + 1;
     }
   
     // Process individual digits
@@ -64,7 +68,7 @@ char* my_itoa(int num, char* str, int base)
     }
   
     // If number is negative, append '-'
-    if (isNegative)
+    if (isNegative && isSigned)
         str[i++] = '-';
   
     str[i] = '\0'; // Append string terminator

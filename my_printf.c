@@ -2,17 +2,11 @@
 #include <stdio.h>
 
 
-int my_strlen(char* str) {
-    int index = 0;
-    while(str[index] != '\0') {
-        index++;
-    }
-    return index;
-}
 
-char* print_d() {
-    char* c = "";
-    return c;
+char* print_d(va_list specifiers) {
+    char* c = malloc(sizeof(char) * BUFSIZE);
+    int num = va_arg(specifiers, int);
+    return my_itoa(num, c, 10);
 }
 
 char* print_o(){
@@ -106,5 +100,5 @@ int my_printf(char * restrict format, ...) {
 }
 
 int main() {
-    my_printf("hello\n");
+    my_printf("hello %d\n", 5);
 }

@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include "my_string.h"
 
 #define NULLPTR (void *)0
 #define BUFSIZE 256

@@ -36,15 +36,22 @@ int my_strlen(char* str) {
 
 long intLen(long num, int base) {
     int len = 0;
+    long r = num;
+    //start at the positive index
     if(num < 0) {
-        num = -num;
-        len = 2;
+        r = -num;
+        len = 1;
     }
     if(!num) {
         return 1;
     }
-    for(; num != 0; ++len) {
-        num /= base;
+    while(r) {
+        r /= base;
+        ++len;
+    }
+    //pointers
+    if(num > UINT_MAX) {
+        len += 2;
     }
     return len;
 }
@@ -54,11 +61,12 @@ char* my_itoa(long num, int base, bool isSigned)
     long num_copy = num;
     int i = 0, isNegative = 0;
     int len = intLen(num, base);
-    char* str = malloc(sizeof(char) * len + 40);
+    char* str;
   
     /* Handle 0 explicitely, otherwise empty string is printed for 0 */
     if (num == 0)
     {
+        str = malloc(sizeof(char) * 2);
         str[i++] = '0';
         str[i] = '\0';
         return str;
@@ -70,11 +78,15 @@ char* my_itoa(long num, int base, bool isSigned)
     {
         isNegative = 1;
         num = -num;
+
     }
 
     if(num < 0 && !isSigned) {
         num = (UINT_MAX + num) + 1;
+        len = intLen(num, base);   
     }
+
+    str = malloc(sizeof(char) * len + 1);
     
     // Process individual digits
     while (num != 0)

@@ -6,7 +6,7 @@
   #  -Wall turns on most, but not all, compiler warnings
   #  -Wextra - errors on unused variables
   #  -Werror Make all warnings into errors.
-  CFLAGS  = -g -Wall -Wextra -Werror
+  CFLAGS  = -g -Wall -Wextra -Werror -g3 -fsanitize=address
   # the build target executable:
   TARGET = my_printf
 

@@ -34,10 +34,27 @@ int my_strlen(char* str) {
     return index;
 }
 
-char* my_itoa(long num, char* str, int base, bool isSigned)
+long intLen(long num, int base) {
+    int len = 0;
+    if(num < 0) {
+        num = -num;
+        len = 2;
+    }
+    if(!num) {
+        return 1;
+    }
+    for(; num != 0; ++len) {
+        num /= base;
+    }
+    return len;
+}
+
+char* my_itoa(long num, int base, bool isSigned)
 {
-    int i = 0;
-    int isNegative = 0;
+    long num_copy = num;
+    int i = 0, isNegative = 0;
+    int len = intLen(num, base);
+    char* str = malloc(sizeof(char) * len + 40);
   
     /* Handle 0 explicitely, otherwise empty string is printed for 0 */
     if (num == 0)
@@ -58,7 +75,7 @@ char* my_itoa(long num, char* str, int base, bool isSigned)
     if(num < 0 && !isSigned) {
         num = (UINT_MAX + num) + 1;
     }
-  
+    
     // Process individual digits
     while (num != 0)
     {
@@ -66,11 +83,16 @@ char* my_itoa(long num, char* str, int base, bool isSigned)
         str[i++] = (rem > 9)? (rem-10) + 'a' : rem + '0';
         num = num/base;
     }
+    if(num_copy > UINT_MAX) {
+        str[i++]= 'x';
+        str[i++]= '0';
+    }
   
     // If number is negative, append '-'
     if (isNegative && isSigned)
         str[i++] = '-';
-  
-    str[i] = '\0'; // Append string terminator
+    
+    
+    str[i] = '\0';
     return reverse_string(str);;
 }

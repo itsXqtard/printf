@@ -4,42 +4,48 @@
 
 
 char* print_d(va_list specifiers) {
-    char* c = malloc(sizeof(char) * BUFSIZE);
     int num = va_arg(specifiers, int);
-    return my_itoa(num, c, 10, SIGNED);
+    return my_itoa(num, 10, SIGNED);
 }
 
 char* print_o(va_list specifiers){
-    char* c = malloc(sizeof(char) * BUFSIZE);
     int num = va_arg(specifiers, int);
-    return my_itoa(num, c, 8, UNSIGNED);
+    return my_itoa(num, 8, UNSIGNED);
 }
 
 
 char* print_u(va_list specifiers) {
-    char* c = malloc(sizeof(char) * BUFSIZE);
     int signedInt = va_arg(specifiers, int);
-    return my_itoa(signedInt, c, 10, UNSIGNED);
+    return my_itoa(signedInt, 10, UNSIGNED);
 }
 
-char* print_x() {
-    char* c = "";
-    return c;
+char* print_x(va_list specifiers) {
+    int num = va_arg(specifiers, int);
+    return my_itoa(num, 16, UNSIGNED);
 }
 
-char* print_c() {
-    char* c = "";
-    return c;
+char* print_c(va_list specifiers) {
+    char* space = malloc(sizeof(char) * 2);
+    int c = va_arg(specifiers, int);
+    space[0] = c;
+    space[1] = '\0';
+    return space;
 }
 
-char* print_s() {
-    char* c = "";
-    return c;
+char* print_s(va_list specifiers) {
+    char* str = va_arg(specifiers, char*);
+    if(str == (char*) NULLPTR) {
+        str = "(null)";
+    }
+    int len = my_strlen(str);
+    char* space = malloc(sizeof(char) * len + 1);
+    return my_strcpy(space, str);
 }
 
-char* print_p() {
-    char* c = "";
-    return c;
+char* print_p(va_list specifiers) {
+    long* num = va_arg(specifiers, long*);
+    unsigned long address = *(unsigned long*)&num;
+    return my_itoa(address, 16, UNSIGNED);
 }
 
 char* (*getPrintFunction(char i, int size))(va_list) {
@@ -80,14 +86,9 @@ int my_printf(char * restrict format, ...) {
         return -1;
     }
 
-    
-    // char* current;
     va_start(specifiers, format);
     while(format[index] != '\0') {
-        if(format[index] != '%') {
-            buffer[buffer_len++] = format[index++];
-            format_len++;
-        } else {
+        if(format[index] == '%') {
             index++;
             printFunction = getPrintFunction(format[index], SPECIFIER_SIZE);
             char* s = printFunction(specifiers);
@@ -99,16 +100,26 @@ int my_printf(char * restrict format, ...) {
             }
             free(s);
             index++;
+        } else {
+            buffer[buffer_len++] = format[index++];
+            format_len++;
         }
     }
     write(1, buffer, buffer_len);
     va_end(specifiers);
-    return 0;
+    free(buffer);
+    return format_len;
     
 
 }
 
 int main() {
-    my_printf("hello %u %o %d %o %d\n", -8, 8, 8, -8, -8);
-    printf("hello %u %o %d %o %d", -8, 8, 8, -8, -8);
+    char* nullPTR = NULL;
+    char* str = malloc(sizeof(char) * 20);
+    my_strcpy(str, "bye");
+    int my_size = my_printf("hello %u %o %d %o %d %x %o %x %s %s %p\n", -8, 8, 8, -8, -8, -15, 'c', 'd', "hello", nullPTR, str);
+    int size = printf("hello %u %o %d %o %d %x %o %x %s %s %p\n", -8, 8, 8, -8, -8, -15, 'c', 'd', "hello", nullPTR, str);
+    printf("My size: %d\n", my_size);
+    printf("size: %d\n", size);
+    free(str);
 }

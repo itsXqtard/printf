@@ -11,7 +11,7 @@
 
 #define NULLPTR (void *)0
 #define BUFSIZE 256
-#define SPECIFIER_SIZE 7
+#define FEATURE_SIZE 7
 #define UNSIGNED false
 #define SIGNED true
 

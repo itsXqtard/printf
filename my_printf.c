@@ -1,10 +1,18 @@
 #include "my_stdio.h"
 #include <stdio.h>
 
+/*
+ * Returns a function pointer with if specifier exists in feature list
+ * @param specifier             - specifier currently looking for
+ * @param size                  - size of feature list
+ * @param va_list               - arugment parameter used after return from closure
+ * @return char*                - returns string produced from specifier function if no specifier 
+ *                                in list returns null pointer
+ *
+**/
+static char* (*getPrintFunction(char specifier, int size))(va_list) {
 
-static char* (*getPrintFunction(char i, int size))(va_list) {
-
-    print_type function_list[] = {
+    print_type feature_list[] = {
         {'d', print_d},
         {'o', print_o},
         {'u', print_u},
@@ -15,21 +23,38 @@ static char* (*getPrintFunction(char i, int size))(va_list) {
     };
 
     for(int x = 0; x < size; x++) {
-        if(function_list[x].specifier == i) {
-            return function_list[x].func;
+        if(feature_list[x].specifier == specifier) {
+            return feature_list[x].func;
         }
     }
     return NULLPTR;
 }
-
-static void addToBuffer(char* buffer, char c, int* buffer_len, int* format_len) {
-    buffer[(*buffer_len)++] = c;
+/*
+ * Takes a buffer and inserts to current position in buffer
+ * @param buffer            - stdin buffer
+ * @param c                 - character to insert
+ * @param buffer_position   - reference to value of buffer's current length
+ * @param format_len        - reference to length of format string
+ *
+**/
+static void addToBuffer(char* buffer, char c, int* buffer_position, int* format_len) {
+    buffer[(*buffer_position)++] = c;
     (*format_len)++;
 }
 
+
+/*
+ * Parces the format specifier and produces the correct value accordingly as string and increments the format length
+ * @param ap                - argument pointer to the current format specifier
+ * @param specifier         - current specifier in format string
+ * @param buffer            - buffer to add current format string to
+ * @param format_len        - reference to length of format string
+ * @param buffer_len        - reference to value of buffer's current length
+ *
+**/
 static void handleFormatSpecifier(va_list ap, char specifier, char* buffer, int* format_len, int* buffer_len) {
     char* (*printFunction)(va_list);
-    printFunction = getPrintFunction(specifier, SPECIFIER_SIZE);
+    printFunction = getPrintFunction(specifier, FEATURE_SIZE);
     char* s = printFunction(ap);
     int i = 0;
     while(s[i] != '\0') {

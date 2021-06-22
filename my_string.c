@@ -60,6 +60,7 @@ char* my_itoa(long num, int base, bool isSigned)
 {
     long num_copy = num;
     int i = 0, isNegative = 0;
+    //finds the len for the correct amount of space to malloc later
     int len = intLen(num, base);
     char* str;
   
@@ -78,9 +79,9 @@ char* my_itoa(long num, int base, bool isSigned)
     {
         isNegative = 1;
         num = -num;
-
     }
-
+    
+    //handles case where a negative is passed as an unsigned specifier
     if(num < 0 && !isSigned) {
         num = (UINT_MAX + num) + 1;
         len = intLen(num, base);   
@@ -92,15 +93,20 @@ char* my_itoa(long num, int base, bool isSigned)
     while (num != 0)
     {
         int rem = num % base;
-        str[i++] = (rem > 9)? (rem-10) + 'a' : rem + '0';
-        num = num/base;
+        str[i++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
+        num = num / base;
     }
+
+    //adds 0x in reverse for %p specifier
+    //because at the end of function reverse gets call
+    //making the statement in the corrected order.
     if(num_copy > UINT_MAX) {
         str[i++]= 'x';
         str[i++]= '0';
     }
   
     // If number is negative, append '-'
+    //when %d is used meaning it's a signed value
     if (isNegative && isSigned)
         str[i++] = '-';
     

@@ -2,53 +2,7 @@
 #include <stdio.h>
 
 
-
-char* print_d(va_list specifiers) {
-    int num = va_arg(specifiers, int);
-    return my_itoa(num, 10, SIGNED);
-}
-
-char* print_o(va_list specifiers){
-    int num = va_arg(specifiers, int);
-    return my_itoa(num, 8, UNSIGNED);
-}
-
-
-char* print_u(va_list specifiers) {
-    int signedInt = va_arg(specifiers, int);
-    return my_itoa(signedInt, 10, UNSIGNED);
-}
-
-char* print_x(va_list specifiers) {
-    int num = va_arg(specifiers, int);
-    return my_itoa(num, 16, UNSIGNED);
-}
-
-char* print_c(va_list specifiers) {
-    char* space = malloc(sizeof(char) * 2);
-    int c = va_arg(specifiers, int);
-    space[0] = c;
-    space[1] = '\0';
-    return space;
-}
-
-char* print_s(va_list specifiers) {
-    char* str = va_arg(specifiers, char*);
-    if(str == (char*) NULLPTR) {
-        str = "(null)";
-    }
-    int len = my_strlen(str);
-    char* space = malloc(sizeof(char) * len + 1);
-    return my_strcpy(space, str);
-}
-
-char* print_p(va_list specifiers) {
-    long* num = va_arg(specifiers, long*);
-    unsigned long address = *(unsigned long*)&num;
-    return my_itoa(address, 16, UNSIGNED);
-}
-
-char* (*getPrintFunction(char i, int size))(va_list) {
+static char* (*getPrintFunction(char i, int size))(va_list) {
 
     print_type function_list[] = {
         {'d', print_d},
@@ -68,45 +22,53 @@ char* (*getPrintFunction(char i, int size))(va_list) {
     return NULLPTR;
 }
 
+static void addToBuffer(char* buffer, char c, int* buffer_len, int* format_len) {
+    buffer[(*buffer_len)++] = c;
+    (*format_len)++;
+}
+
+static void handleFormatSpecifier(va_list ap, char specifier, char* buffer, int* format_len, int* buffer_len) {
+    char* (*printFunction)(va_list);
+    printFunction = getPrintFunction(specifier, SPECIFIER_SIZE);
+    char* s = printFunction(ap);
+    int i = 0;
+    while(s[i] != '\0') {
+        addToBuffer(buffer, s[i], buffer_len, format_len);
+        i++;
+    }
+    free(s);
+}
+
+
+
 int my_printf(char * restrict format, ...) {
     
     if(format == (char*)NULLPTR) {
         return -1;
     }
 
-    int format_len = 0, buffer_len = 0;
-    int index = 0;
+    va_list ap;
+    int format_len = 0, buffer_len = 0, index = 0;
     char *buffer;
-    va_list specifiers;
-
-    char* (*printFunction)(va_list);
-
+    
 	buffer = malloc(sizeof(char) * BUFSIZE);
 	if (buffer == NULLPTR) {
         return -1;
     }
 
-    va_start(specifiers, format);
+    va_start(ap, format);
     while(format[index] != '\0') {
         if(format[index] == '%') {
             index++;
-            printFunction = getPrintFunction(format[index], SPECIFIER_SIZE);
-            char* s = printFunction(specifiers);
-            int i = 0;
-            while(s[i] != '\0') {
-                buffer[buffer_len++] = s[i];
-                format_len++;
-                i++;
-            }
-            free(s);
+            handleFormatSpecifier(ap, format[index], buffer, &format_len, &buffer_len);
             index++;
         } else {
-            buffer[buffer_len++] = format[index++];
-            format_len++;
+            addToBuffer(buffer, format[index], &buffer_len, &format_len);
+            index++;
         }
     }
     write(1, buffer, buffer_len);
-    va_end(specifiers);
+    va_end(ap);
     free(buffer);
     return format_len;
     

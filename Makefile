@@ -12,14 +12,16 @@
 
 all: $(TARGET) 
 
-$(TARGET): $(TARGET).o my_string.o
-	$(CC) $(CFLAGS) $(TARGET).o  my_string.o -o $(TARGET)
+$(TARGET): $(TARGET).o my_string.o print_specifiers.o
+	$(CC) $(CFLAGS) $(TARGET).o  my_string.o print_specifiers.o -o $(TARGET)
 
 
 my_mastermind.o: my_printf.c
 	$(CC) $(CFLAGS) -c my_printf.c
 my_string.o: my_string.c
 	$(CC) $(CFLAGS) -c my_string.c
+print_specifiers.o: print_specifiers.c
+	$(CC) $(CFLAGS) -c print_specifiers.c
 
 
 clean:

@@ -1,0 +1,7 @@
+*.o
+*.out
+*.a
+
+# Precompiled Headers
+*.gch
+*.pch

@@ -1,5 +1,10 @@
 #include "my_string.h"
 
+/**
+ * Reverse a string
+ * @param str - string that is being reversed
+ * @return reversed string
+**/
 char* reverse_string(char* str)
 {
     int len= my_strlen(str);
@@ -12,6 +17,12 @@ char* reverse_string(char* str)
     return str;
 }
 
+/**
+ * Copies a source string to an allocated space in memory where destination was declared;
+ * @param dest - where src string is being stored at
+ * @param src  - where dest gets data from
+ * @return destination string
+**/
 char* my_strcpy(char *dest, char *src)
 {
 	int x = 0;
@@ -25,7 +36,11 @@ char* my_strcpy(char *dest, char *src)
 	dest[x] = src[x];
 	return (dest);
 }
-
+/**
+ * Gets the length of the str
+ * @param str - str that is being used to get length from
+ * @return size of the string
+**/
 int my_strlen(char* str) {
     int index = 0;
     while(str[index] != '\0') {
@@ -34,6 +49,12 @@ int my_strlen(char* str) {
     return index;
 }
 
+/**
+ * Gets the length of the integer by modding by the base until remainder is 0
+ * @param num   - value we are getting the length of
+ * @param base  - base format of the integer
+ * @return size of the string
+**/
 long intLen(long num, int base) {
     int len = 0;
     long r = num;
@@ -56,6 +77,14 @@ long intLen(long num, int base) {
     return len;
 }
 
+/**
+ * Converts a number into a string
+ * @param num  - number we are trying to convert to string
+ * @param base - base format of the integer
+ * @param isSigned - indicated whether the inputted number is 
+ *                   supposed to be signed value or unsigned
+ * @return number as string
+**/
 char* my_itoa(long num, int base, bool isSigned)
 {
     long num_copy = num;

@@ -1,7 +1,7 @@
 #include "my_stdio.h"
 #include <stdio.h>
 
-/*
+/**
  * Returns a function pointer with if specifier exists in feature list
  * @param specifier             - specifier currently looking for
  * @param size                  - size of feature list
@@ -29,7 +29,7 @@ static char* (*getPrintFunction(char specifier, int size))(va_list) {
     }
     return NULLPTR;
 }
-/*
+/**
  * Takes a buffer and inserts to current position in buffer
  * @param buffer            - stdin buffer
  * @param c                 - character to insert
@@ -43,7 +43,7 @@ static void addToBuffer(char* buffer, char c, int* buffer_position, int* format_
 }
 
 
-/*
+/**
  * Parces the format specifier and produces the correct value accordingly as string and increments the format length
  * @param ap                - argument pointer to the current format specifier
  * @param specifier         - current specifier in format string
